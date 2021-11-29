@@ -12,7 +12,7 @@ type pokemonInteractor struct {
 }
 
 type PokemonInteractor interface {
-	GetAll(su []*model.Pokemon) ([]*model.Pokemon, error)
+	GetAll(pk []*model.Pokemon) ([]*model.Pokemon, error)
 	GetById(uint64) (*model.Pokemon, error)
 }
 
@@ -20,20 +20,20 @@ func NewPokemonInteractor(r repository.PokemonRepository, p presenter.PokemonPre
 	return &pokemonInteractor{r, p}
 }
 
-func (sui *pokemonInteractor) GetAll(sus []*model.Pokemon) ([]*model.Pokemon, error) {
-	su, err := sui.PokemonRepository.FindAll(sus)
+func (pki *pokemonInteractor) GetAll(pks []*model.Pokemon) ([]*model.Pokemon, error) {
+	pk, err := pki.PokemonRepository.FindAll(pks)
 	if err != nil {
 		return nil, err
 	}
 
-	return sui.PokemonPresenter.ResponsePokemons(su), nil
+	return pki.PokemonPresenter.ResponsePokemons(pk), nil
 }
 
-func (sui *pokemonInteractor) GetById(id uint64) (*model.Pokemon, error) {
-	s, err := sui.PokemonRepository.FindByID(id)
+func (pki *pokemonInteractor) GetById(id uint64) (*model.Pokemon, error) {
+	pk, err := pki.PokemonRepository.FindByID(id)
 	if err != nil {
 		return nil, err
 	}
 
-	return s, nil
+	return pk, nil
 }

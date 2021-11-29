@@ -2,7 +2,6 @@ package datastore
 
 import (
 	"encoding/csv"
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -11,7 +10,7 @@ import (
 	"github.com/omarscd/academy-go-q42021/model"
 )
 
-func NewSUSMap() map[uint64]model.Pokemon {
+func NewPkMap() map[uint64]model.Pokemon {
 	csvPath, _ := filepath.Abs("./db/pokes.csv")
 	csvfile, err := os.Open(csvPath)
 	if err != nil {
@@ -25,22 +24,22 @@ func NewSUSMap() map[uint64]model.Pokemon {
 	rawCSVdata, err := reader.ReadAll()
 
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 		os.Exit(1)
 	}
 
-	susMap := make(map[uint64]model.Pokemon)
+	pkMap := make(map[uint64]model.Pokemon)
 	for _, record := range rawCSVdata {
 		id, err := strconv.ParseUint(record[0], 10, 32)
 		if err != nil {
 			continue
 		}
-		susMap[id] = model.Pokemon{
+		pkMap[id] = model.Pokemon{
 			ID:       id,
 			Name:     record[1],
 			MainType: record[2],
 		}
 	}
 
-	return susMap
+	return pkMap
 }

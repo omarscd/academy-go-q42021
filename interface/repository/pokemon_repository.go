@@ -7,31 +7,31 @@ import (
 )
 
 type pokemonRepository struct {
-	SUSMap map[uint64]model.Pokemon
+	pkMap map[uint64]model.Pokemon
 }
 
 type PokemonRepository interface {
-	FindAll(sus []*model.Pokemon) ([]*model.Pokemon, error)
+	FindAll([]*model.Pokemon) ([]*model.Pokemon, error)
 	FindByID(id uint64) (*model.Pokemon, error)
 }
 
-func NewPokemonRepository(susMap map[uint64]model.Pokemon) PokemonRepository {
-	return &pokemonRepository{susMap}
+func NewPokemonRepository(pkMap map[uint64]model.Pokemon) PokemonRepository {
+	return &pokemonRepository{pkMap}
 }
 
-func (sur *pokemonRepository) FindAll(sus []*model.Pokemon) ([]*model.Pokemon, error) {
-	for _, su := range sur.SUSMap {
-		tmp := su
-		sus = append(sus, &tmp)
+func (pkr *pokemonRepository) FindAll(pks []*model.Pokemon) ([]*model.Pokemon, error) {
+	for _, pk := range pkr.pkMap {
+		tmp := pk
+		pks = append(pks, &tmp)
 	}
 
-	return sus, nil
+	return pks, nil
 }
 
-func (sur *pokemonRepository) FindByID(id uint64) (*model.Pokemon, error) {
-	su, ok := sur.SUSMap[id]
+func (pkr *pokemonRepository) FindByID(id uint64) (*model.Pokemon, error) {
+	pk, ok := pkr.pkMap[id]
 	if ok == true {
-		return &su, nil
+		return &pk, nil
 	}
-	return nil, errors.New("Stand user not found")
+	return nil, errors.New("Pokemon ID not found")
 }

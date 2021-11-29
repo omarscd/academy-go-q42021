@@ -9,9 +9,9 @@ import (
 )
 
 func main() {
-	susMap := datastore.NewSUSMap()
+	pkMap := datastore.NewPkMap()
 
-	r := registry.NewRegistry(&susMap)
+	r := registry.NewRegistry(&pkMap)
 
 	router := router.NewRouter(r.NewAppController())
 

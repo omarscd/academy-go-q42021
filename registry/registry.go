@@ -6,15 +6,15 @@ import (
 )
 
 type registry struct {
-	susMap map[uint64]model.Pokemon
+	pkMap map[uint64]model.Pokemon
 }
 
 type Registry interface {
 	NewAppController() controller.AppController
 }
 
-func NewRegistry(susMap *map[uint64]model.Pokemon) Registry {
-	return &registry{*susMap}
+func NewRegistry(pkMap *map[uint64]model.Pokemon) Registry {
+	return &registry{*pkMap}
 }
 
 func (r *registry) NewAppController() controller.AppController {

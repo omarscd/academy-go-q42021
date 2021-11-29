@@ -18,14 +18,14 @@ type PokemonController interface {
 	GetPokemonById(c *gin.Context) error
 }
 
-func NewPokemonController(sui interactor.PokemonInteractor) PokemonController {
-	return &pokemonController{sui}
+func NewPokemonController(pki interactor.PokemonInteractor) PokemonController {
+	return &pokemonController{pki}
 }
 
-func (suc *pokemonController) GetPokemons(c *gin.Context) error {
+func (pkc *pokemonController) GetPokemons(c *gin.Context) error {
 	var u []*model.Pokemon
 
-	u, err := suc.pokemonInteractor.GetAll(u)
+	u, err := pkc.pokemonInteractor.GetAll(u)
 	if err != nil {
 		return err
 	}
@@ -34,9 +34,9 @@ func (suc *pokemonController) GetPokemons(c *gin.Context) error {
 	return nil
 }
 
-func (suc *pokemonController) GetPokemonById(c *gin.Context) error {
+func (pkc *pokemonController) GetPokemonById(c *gin.Context) error {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
-	u, err := suc.pokemonInteractor.GetById(id)
+	u, err := pkc.pokemonInteractor.GetById(id)
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return err

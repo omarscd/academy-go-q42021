@@ -7,13 +7,13 @@ import (
 type pokemonPresenter struct{}
 
 type PokemonPresenter interface {
-	ResponsePokemons(su []*model.Pokemon) []*model.Pokemon
+	ResponsePokemons([]*model.Pokemon) []*model.Pokemon
 }
 
 func NewPokemonPresenter() PokemonPresenter {
 	return &pokemonPresenter{}
 }
 
-func (sup *pokemonPresenter) ResponsePokemons(sus []*model.Pokemon) []*model.Pokemon {
-	return sus
+func (pkp *pokemonPresenter) ResponsePokemons(pks []*model.Pokemon) []*model.Pokemon {
+	return pks
 }

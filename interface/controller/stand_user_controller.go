@@ -9,23 +9,23 @@ import (
 	"github.com/omarscd/academy-go-q42021/usecase/interactor"
 )
 
-type standUserController struct {
-	standUserInteractor interactor.StandUserInteractor
+type pokemonController struct {
+	pokemonInteractor interactor.PokemonInteractor
 }
 
-type StandUserController interface {
-	GetStandUsers(c *gin.Context) error
-	GetStandUserById(c *gin.Context) error
+type PokemonController interface {
+	GetPokemons(c *gin.Context) error
+	GetPokemonById(c *gin.Context) error
 }
 
-func NewStandUserController(sui interactor.StandUserInteractor) StandUserController {
-	return &standUserController{sui}
+func NewPokemonController(sui interactor.PokemonInteractor) PokemonController {
+	return &pokemonController{sui}
 }
 
-func (suc *standUserController) GetStandUsers(c *gin.Context) error {
-	var u []*model.StandUser
+func (suc *pokemonController) GetPokemons(c *gin.Context) error {
+	var u []*model.Pokemon
 
-	u, err := suc.standUserInteractor.GetAll(u)
+	u, err := suc.pokemonInteractor.GetAll(u)
 	if err != nil {
 		return err
 	}
@@ -34,9 +34,9 @@ func (suc *standUserController) GetStandUsers(c *gin.Context) error {
 	return nil
 }
 
-func (suc *standUserController) GetStandUserById(c *gin.Context) error {
+func (suc *pokemonController) GetPokemonById(c *gin.Context) error {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
-	u, err := suc.standUserInteractor.GetById(id)
+	u, err := suc.pokemonInteractor.GetById(id)
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return err

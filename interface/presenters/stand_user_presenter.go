@@ -4,16 +4,16 @@ import (
 	"github.com/omarscd/academy-go-q42021/model"
 )
 
-type standUserPresenter struct{}
+type pokemonPresenter struct{}
 
-type StandUserPresenter interface {
-	ResponseStandUsers(su []*model.StandUser) []*model.StandUser
+type PokemonPresenter interface {
+	ResponsePokemons(su []*model.Pokemon) []*model.Pokemon
 }
 
-func NewStandUserPresenter() StandUserPresenter {
-	return &standUserPresenter{}
+func NewPokemonPresenter() PokemonPresenter {
+	return &pokemonPresenter{}
 }
 
-func (sup *standUserPresenter) ResponseStandUsers(sus []*model.StandUser) []*model.StandUser {
+func (sup *pokemonPresenter) ResponsePokemons(sus []*model.Pokemon) []*model.Pokemon {
 	return sus
 }

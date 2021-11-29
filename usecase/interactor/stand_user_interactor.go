@@ -6,31 +6,31 @@ import (
 	"github.com/omarscd/academy-go-q42021/usecase/repository"
 )
 
-type standUserInteractor struct {
-	StandUserRepository repository.StandUserRepository
-	StandUserPresenter  presenter.StandUserPresenter
+type pokemonInteractor struct {
+	PokemonRepository repository.PokemonRepository
+	PokemonPresenter  presenter.PokemonPresenter
 }
 
-type StandUserInteractor interface {
-	GetAll(su []*model.StandUser) ([]*model.StandUser, error)
-	GetById(uint64) (*model.StandUser, error)
+type PokemonInteractor interface {
+	GetAll(su []*model.Pokemon) ([]*model.Pokemon, error)
+	GetById(uint64) (*model.Pokemon, error)
 }
 
-func NewStandUserInteractor(r repository.StandUserRepository, p presenter.StandUserPresenter) StandUserInteractor {
-	return &standUserInteractor{r, p}
+func NewPokemonInteractor(r repository.PokemonRepository, p presenter.PokemonPresenter) PokemonInteractor {
+	return &pokemonInteractor{r, p}
 }
 
-func (sui *standUserInteractor) GetAll(sus []*model.StandUser) ([]*model.StandUser, error) {
-	su, err := sui.StandUserRepository.FindAll(sus)
+func (sui *pokemonInteractor) GetAll(sus []*model.Pokemon) ([]*model.Pokemon, error) {
+	su, err := sui.PokemonRepository.FindAll(sus)
 	if err != nil {
 		return nil, err
 	}
 
-	return sui.StandUserPresenter.ResponseStandUsers(su), nil
+	return sui.PokemonPresenter.ResponsePokemons(su), nil
 }
 
-func (sui *standUserInteractor) GetById(id uint64) (*model.StandUser, error) {
-	s, err := sui.StandUserRepository.FindByID(id)
+func (sui *pokemonInteractor) GetById(id uint64) (*model.Pokemon, error) {
+	s, err := sui.PokemonRepository.FindByID(id)
 	if err != nil {
 		return nil, err
 	}

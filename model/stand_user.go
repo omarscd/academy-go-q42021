@@ -2,24 +2,24 @@ package model
 
 import "errors"
 
-type StandUser struct {
-	ID    uint64 `json:"id"`
-	Name  string `json:"name"`
-	Stand string `json:"stand"`
+type Pokemon struct {
+	ID       uint64 `json:"id"`
+	Name     string `json:"name"`
+	MainType string `json:"type"`
 }
 
-func NewStandUser(id uint64, name string, stand string) (*StandUser, error) {
+func NewPokemon(id uint64, name string, mt string) (*Pokemon, error) {
 	if id == 0 {
 		return nil, errors.New("ID can't be 0")
 	}
 	if name == "" {
 		return nil, errors.New("Must provide a name")
 	}
-	if stand == "" {
-		return nil, errors.New("Must provide a stand")
+	if mt == "" {
+		return nil, errors.New("Must provide a type")
 	}
 
-	return &StandUser{
-		id, name, stand,
+	return &Pokemon{
+		id, name, mt,
 	}, nil
 }

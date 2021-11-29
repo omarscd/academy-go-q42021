@@ -9,18 +9,18 @@ import (
 	ur "github.com/omarscd/academy-go-q42021/usecase/repository"
 )
 
-func (r *registry) NewStandUserController() controller.StandUserController {
-	return controller.NewStandUserController(r.NewStandUserInteractor())
+func (r *registry) NewPokemonController() controller.PokemonController {
+	return controller.NewPokemonController(r.NewPokemonInteractor())
 }
 
-func (r *registry) NewStandUserInteractor() interactor.StandUserInteractor {
-	return interactor.NewStandUserInteractor(r.NewStandUserRepository(), r.NewStandUserPresenter())
+func (r *registry) NewPokemonInteractor() interactor.PokemonInteractor {
+	return interactor.NewPokemonInteractor(r.NewPokemonRepository(), r.NewPokemonPresenter())
 }
 
-func (r *registry) NewStandUserRepository() ur.StandUserRepository {
-	return ir.NewStandUserRepository(r.susMap)
+func (r *registry) NewPokemonRepository() ur.PokemonRepository {
+	return ir.NewPokemonRepository(r.susMap)
 }
 
-func (r *registry) NewStandUserPresenter() up.StandUserPresenter {
-	return ip.NewStandUserPresenter()
+func (r *registry) NewPokemonPresenter() up.PokemonPresenter {
+	return ip.NewPokemonPresenter()
 }

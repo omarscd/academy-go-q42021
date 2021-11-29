@@ -6,17 +6,17 @@ import (
 )
 
 type registry struct {
-	susMap map[uint64]model.StandUser
+	susMap map[uint64]model.Pokemon
 }
 
 type Registry interface {
 	NewAppController() controller.AppController
 }
 
-func NewRegistry(susMap *map[uint64]model.StandUser) Registry {
+func NewRegistry(susMap *map[uint64]model.Pokemon) Registry {
 	return &registry{*susMap}
 }
 
 func (r *registry) NewAppController() controller.AppController {
-	return r.NewStandUserController()
+	return r.NewPokemonController()
 }

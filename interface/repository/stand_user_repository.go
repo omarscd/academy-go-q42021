@@ -6,20 +6,20 @@ import (
 	"github.com/omarscd/academy-go-q42021/model"
 )
 
-type standUserRepository struct {
-	SUSMap map[uint64]model.StandUser
+type pokemonRepository struct {
+	SUSMap map[uint64]model.Pokemon
 }
 
-type StandUserRepository interface {
-	FindAll(sus []*model.StandUser) ([]*model.StandUser, error)
-	FindByID(id uint64) (*model.StandUser, error)
+type PokemonRepository interface {
+	FindAll(sus []*model.Pokemon) ([]*model.Pokemon, error)
+	FindByID(id uint64) (*model.Pokemon, error)
 }
 
-func NewStandUserRepository(susMap map[uint64]model.StandUser) StandUserRepository {
-	return &standUserRepository{susMap}
+func NewPokemonRepository(susMap map[uint64]model.Pokemon) PokemonRepository {
+	return &pokemonRepository{susMap}
 }
 
-func (sur *standUserRepository) FindAll(sus []*model.StandUser) ([]*model.StandUser, error) {
+func (sur *pokemonRepository) FindAll(sus []*model.Pokemon) ([]*model.Pokemon, error) {
 	for _, su := range sur.SUSMap {
 		tmp := su
 		sus = append(sus, &tmp)
@@ -28,7 +28,7 @@ func (sur *standUserRepository) FindAll(sus []*model.StandUser) ([]*model.StandU
 	return sus, nil
 }
 
-func (sur *standUserRepository) FindByID(id uint64) (*model.StandUser, error) {
+func (sur *pokemonRepository) FindByID(id uint64) (*model.Pokemon, error) {
 	su, ok := sur.SUSMap[id]
 	if ok == true {
 		return &su, nil

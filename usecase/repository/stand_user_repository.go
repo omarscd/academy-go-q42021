@@ -2,7 +2,7 @@ package repository
 
 import "github.com/omarscd/academy-go-q42021/model"
 
-type StandUserRepository interface {
-	FindAll([]*model.StandUser) ([]*model.StandUser, error)
-	FindByID(id uint64) (*model.StandUser, error)
+type PokemonRepository interface {
+	FindAll([]*model.Pokemon) ([]*model.Pokemon, error)
+	FindByID(id uint64) (*model.Pokemon, error)
 }

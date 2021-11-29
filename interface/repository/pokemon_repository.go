@@ -29,8 +29,7 @@ func (pkr *pokemonRepository) FindAll(pks []*model.Pokemon) ([]*model.Pokemon, e
 }
 
 func (pkr *pokemonRepository) FindByID(id uint64) (*model.Pokemon, error) {
-	pk, ok := pkr.pkMap[id]
-	if ok == true {
+	if pk, ok := pkr.pkMap[id]; ok {
 		return &pk, nil
 	}
 	return nil, errors.New("Pokemon ID not found")

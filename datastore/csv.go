@@ -11,7 +11,11 @@ import (
 )
 
 func NewPkMap() map[uint64]model.Pokemon {
-	csvPath, _ := filepath.Abs("./db/pokes.csv")
+	csvPath, err := filepath.Abs("./db/pokes.csv")
+	if err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
 	csvfile, err := os.Open(csvPath)
 	if err != nil {
 		log.Fatal(err)

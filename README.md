@@ -6,5 +6,5 @@ Go version: `1.17`
 
 | ENDPOINT         | HTTP Method    | Parameters    |
 |------------------|----------------|---------------|
-| /stand_users     | GET            |               |
-| /stand_users/:id | GET            |               |
+| /pokemons        | GET            |               |
+| /pokemons/:id    | GET            |               |

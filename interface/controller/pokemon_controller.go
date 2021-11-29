@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/omarscd/academy-go-q42021/model"
 	"github.com/omarscd/academy-go-q42021/usecase/interactor"
 )
 
@@ -23,10 +22,9 @@ func NewPokemonController(pki interactor.PokemonInteractor) PokemonController {
 }
 
 func (pkc *pokemonController) GetPokemons(c *gin.Context) {
-	var pk []*model.Pokemon
-
-	pk, err := pkc.pokemonInteractor.GetAll(pk)
+	pk, err := pkc.pokemonInteractor.GetAll()
 	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Internal server error."})
 		return
 	}
 

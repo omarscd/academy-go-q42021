@@ -23,24 +23,30 @@ func NewPokemonController(pki interactor.PokemonInteractor) PokemonController {
 }
 
 func (pkc *pokemonController) GetPokemons(c *gin.Context) error {
-	var u []*model.Pokemon
+	var pk []*model.Pokemon
 
-	u, err := pkc.pokemonInteractor.GetAll(u)
+	pk, err := pkc.pokemonInteractor.GetAll(pk)
 	if err != nil {
 		return err
 	}
 
-	c.IndentedJSON(http.StatusOK, u)
+	c.IndentedJSON(http.StatusOK, pk)
 	return nil
 }
 
 func (pkc *pokemonController) GetPokemonById(c *gin.Context) error {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
-	u, err := pkc.pokemonInteractor.GetById(id)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid Pokemon ID. Value must be numeric."})
+		return err
+	}
+
+	pk, err := pkc.pokemonInteractor.GetById(id)
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return err
 	}
-	c.IndentedJSON(http.StatusOK, u)
+
+	c.IndentedJSON(http.StatusOK, pk)
 	return nil
 }

@@ -41,6 +41,6 @@ func NewSUSMap() map[uint64]model.Pokemon {
 			MainType: record[2],
 		}
 	}
-	fmt.Println(susMap)
+
 	return susMap
 }

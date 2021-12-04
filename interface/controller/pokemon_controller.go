@@ -34,13 +34,13 @@ func (pkc *pokemonController) GetPokemons(c *gin.Context) {
 func (pkc *pokemonController) GetPokemonById(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid Pokemon ID. Value must be numeric."})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Invalid Pokemon ID. Value must be numeric."})
 		return
 	}
 
 	pk, err := pkc.pokemonInteractor.GetById(id)
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 

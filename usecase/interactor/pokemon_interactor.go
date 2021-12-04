@@ -32,7 +32,9 @@ func (pki *pokemonInteractor) GetAll() ([]*model.Pokemon, error) {
 }
 
 func (pki *pokemonInteractor) GetById(id uint64) (*model.Pokemon, error) {
-	pk, err := pki.PokemonRepository.FindByID(id)
+	pk, err := pki.PokemonRepository.FindOne(func(pk model.Pokemon) bool {
+		return pk.ID == id
+	})
 	if err != nil {
 		return nil, err
 	}

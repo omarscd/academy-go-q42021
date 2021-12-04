@@ -12,7 +12,7 @@ type pokemonRepository struct {
 
 type PokemonRepository interface {
 	Find(func(model.Pokemon) bool) ([]*model.Pokemon, error)
-	FindByID(id uint64) (*model.Pokemon, error)
+	FindOne(func(model.Pokemon) bool) (*model.Pokemon, error)
 }
 
 func NewPokemonRepository(pkMap map[uint64]model.Pokemon) PokemonRepository {
@@ -30,9 +30,11 @@ func (pkr *pokemonRepository) Find(test func(model.Pokemon) bool) ([]*model.Poke
 	return pks, nil
 }
 
-func (pkr *pokemonRepository) FindByID(id uint64) (*model.Pokemon, error) {
-	if pk, ok := pkr.pkMap[id]; ok {
-		return &pk, nil
+func (pkr *pokemonRepository) FindOne(test func(model.Pokemon) bool) (*model.Pokemon, error) {
+	for _, pk := range pkr.pkMap {
+		if tmp := pk; test(tmp) {
+			return &tmp, nil
+		}
 	}
-	return nil, errors.New("Pokemon ID not found")
+	return nil, errors.New("Pokemon not found")
 }

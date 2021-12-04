@@ -21,7 +21,9 @@ func NewPokemonInteractor(r repository.PokemonRepository, p presenter.PokemonPre
 }
 
 func (pki *pokemonInteractor) GetAll() ([]*model.Pokemon, error) {
-	pk, err := pki.PokemonRepository.FindAll()
+	pk, err := pki.PokemonRepository.Find(func(model.Pokemon) bool {
+		return true
+	})
 	if err != nil {
 		return nil, err
 	}

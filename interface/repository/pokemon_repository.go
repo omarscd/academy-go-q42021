@@ -11,7 +11,7 @@ type pokemonRepository struct {
 }
 
 type PokemonRepository interface {
-	FindAll() ([]*model.Pokemon, error)
+	Find(func(model.Pokemon) bool) ([]*model.Pokemon, error)
 	FindByID(id uint64) (*model.Pokemon, error)
 }
 
@@ -19,11 +19,12 @@ func NewPokemonRepository(pkMap map[uint64]model.Pokemon) PokemonRepository {
 	return &pokemonRepository{pkMap}
 }
 
-func (pkr *pokemonRepository) FindAll() ([]*model.Pokemon, error) {
-	pks := make([]*model.Pokemon, 1)
+func (pkr *pokemonRepository) Find(test func(model.Pokemon) bool) ([]*model.Pokemon, error) {
+	pks := make([]*model.Pokemon, 0)
 	for _, pk := range pkr.pkMap {
-		tmp := pk
-		pks = append(pks, &tmp)
+		if tmp := pk; test(tmp) {
+			pks = append(pks, &tmp)
+		}
 	}
 
 	return pks, nil

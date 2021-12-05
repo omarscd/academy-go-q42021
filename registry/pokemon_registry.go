@@ -14,7 +14,7 @@ func (r *registry) NewPokemonController() controller.PokemonController {
 }
 
 func (r *registry) NewPokemonInteractor() interactor.PokemonInteractor {
-	return interactor.NewPokemonInteractor(r.NewPokemonRepository(), r.NewPokemonPresenter())
+	return interactor.NewPokemonInteractor(r.NewPokemonRepository(), r.NewPokemonExtApi(), r.NewPokemonPresenter())
 }
 
 func (r *registry) NewPokemonRepository() ur.PokemonRepository {
@@ -23,4 +23,8 @@ func (r *registry) NewPokemonRepository() ur.PokemonRepository {
 
 func (r *registry) NewPokemonPresenter() up.PokemonPresenter {
 	return ip.NewPokemonPresenter()
+}
+
+func (r *registry) NewPokemonExtApi() ur.PokemonExtApi {
+	return ir.NewPokemonExtApi("https://pokeapi.co/api/v2/")
 }

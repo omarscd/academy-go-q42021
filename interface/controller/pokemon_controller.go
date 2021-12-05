@@ -15,6 +15,7 @@ type pokemonController struct {
 type PokemonController interface {
 	GetPokemons(c *gin.Context)
 	GetPokemonById(c *gin.Context)
+	GetPokemonExt(c *gin.Context)
 }
 
 func NewPokemonController(pki interactor.PokemonInteractor) PokemonController {
@@ -39,6 +40,22 @@ func (pkc *pokemonController) GetPokemonById(c *gin.Context) {
 	}
 
 	pk, err := pkc.pokemonInteractor.GetById(id)
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, pk)
+}
+
+func (pkc *pokemonController) GetPokemonExt(c *gin.Context) {
+	name := c.Param("name")
+	if name == "" {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Must provide a pokemon name."})
+		return
+	}
+
+	pk, err := pkc.pokemonInteractor.GetExtPokeByName(name)
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return

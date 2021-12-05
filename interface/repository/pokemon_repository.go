@@ -12,6 +12,7 @@ type pokemonRepository struct {
 type PokemonRepository interface {
 	GetAll() ([]*model.Pokemon, error)
 	GetById(id uint64) (*model.Pokemon, error)
+	InsertOne(model.Pokemon) error
 }
 
 func NewPokemonRepository(pkDB datastore.PokemonDB) PokemonRepository {
@@ -36,4 +37,9 @@ func (pkr *pokemonRepository) GetById(id uint64) (*model.Pokemon, error) {
 		return nil, err
 	}
 	return pk, nil
+}
+
+func (pkr *pokemonRepository) InsertOne(pk model.Pokemon) error {
+	err := pkr.pkDB.InsertOne(pk)
+	return err
 }

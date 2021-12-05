@@ -46,5 +46,10 @@ func (pki *pokemonInteractor) GetExtPokeByName(name string) (*model.Pokemon, err
 		return nil, err
 	}
 
+	err = pki.PokemonRepository.InsertOne(*pk)
+	if err != nil {
+		return nil, err
+	}
+
 	return pk, nil
 }

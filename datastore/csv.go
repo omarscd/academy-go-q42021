@@ -13,6 +13,7 @@ import (
 
 type PokemonDB struct {
 	pkMap map[uint64]model.Pokemon
+	path  string
 }
 
 // Find returns a slice of all the Pokemons that pass the test function
@@ -37,9 +38,42 @@ func (pkDB *PokemonDB) FindOne(test func(model.Pokemon) bool) (*model.Pokemon, e
 	return nil, errors.New("Pokemon not found")
 }
 
-// InsertOnt appends the element to the csv and adds it to the pkMap
-func (pkDB *PokemonDB) InsertOne(model.Pokemon) error {
-	// TODO:
+// InsertOne appends the element to the csv and adds it to the pkMap
+func (pkDB *PokemonDB) InsertOne(pk model.Pokemon) error {
+	// if record already exists, do not write again
+	if _, ok := pkDB.pkMap[pk.ID]; ok {
+		return nil
+	}
+
+	csvPath, err := filepath.Abs(pkDB.path)
+	if err != nil {
+		log.Printf("Could not access path: %v", pkDB.path)
+		return err
+	}
+
+	file, err := os.OpenFile(csvPath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		log.Printf("Could not open file: %v", pkDB.path)
+		return err
+	}
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	record := []string{
+		strconv.FormatUint(pk.ID, 10),
+		pk.Name,
+		pk.MainType,
+	}
+
+	writer.Write(record)
+	if err := writer.Error(); err != nil {
+		log.Printf("Could not write record: %v", pk)
+		return err
+	}
+
+	pkDB.pkMap[pk.ID] = pk
 	return nil
 }
 
@@ -81,5 +115,5 @@ func NewPokemonDB(path string) (*PokemonDB, error) {
 		pkMap[id] = *pk
 	}
 
-	return &PokemonDB{pkMap}, nil
+	return &PokemonDB{pkMap, path}, nil
 }

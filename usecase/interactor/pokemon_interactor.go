@@ -21,9 +21,7 @@ func NewPokemonInteractor(r repository.PokemonRepository, p presenter.PokemonPre
 }
 
 func (pki *pokemonInteractor) GetAll() ([]*model.Pokemon, error) {
-	pk, err := pki.PokemonRepository.Find(func(model.Pokemon) bool {
-		return true
-	})
+	pk, err := pki.PokemonRepository.GetAll()
 	if err != nil {
 		return nil, err
 	}
@@ -32,9 +30,7 @@ func (pki *pokemonInteractor) GetAll() ([]*model.Pokemon, error) {
 }
 
 func (pki *pokemonInteractor) GetById(id uint64) (*model.Pokemon, error) {
-	pk, err := pki.PokemonRepository.FindOne(func(pk model.Pokemon) bool {
-		return pk.ID == id
-	})
+	pk, err := pki.PokemonRepository.GetById(id)
 	if err != nil {
 		return nil, err
 	}

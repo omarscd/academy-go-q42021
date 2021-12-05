@@ -1,20 +1,20 @@
 package registry
 
 import (
+	"github.com/omarscd/academy-go-q42021/datastore"
 	"github.com/omarscd/academy-go-q42021/interface/controller"
-	"github.com/omarscd/academy-go-q42021/model"
 )
 
 type registry struct {
-	pkMap map[uint64]model.Pokemon
+	pkDB datastore.PokemonDB
 }
 
 type Registry interface {
 	NewAppController() controller.AppController
 }
 
-func NewRegistry(pkMap *map[uint64]model.Pokemon) Registry {
-	return &registry{*pkMap}
+func NewRegistry(pkDB *datastore.PokemonDB) Registry {
+	return &registry{*pkDB}
 }
 
 func (r *registry) NewAppController() controller.AppController {

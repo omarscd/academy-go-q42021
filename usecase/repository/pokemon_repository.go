@@ -3,6 +3,6 @@ package repository
 import "github.com/omarscd/academy-go-q42021/model"
 
 type PokemonRepository interface {
-	Find(test func(model.Pokemon) bool) ([]*model.Pokemon, error)
-	FindOne(test func(model.Pokemon) bool) (*model.Pokemon, error)
+	GetAll() ([]*model.Pokemon, error)
+	GetById(id uint64) (*model.Pokemon, error)
 }

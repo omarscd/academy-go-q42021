@@ -1,40 +1,39 @@
 package repository
 
 import (
-	"errors"
-
+	"github.com/omarscd/academy-go-q42021/datastore"
 	"github.com/omarscd/academy-go-q42021/model"
 )
 
 type pokemonRepository struct {
-	pkMap map[uint64]model.Pokemon
+	pkDB datastore.PokemonDB
 }
 
 type PokemonRepository interface {
-	Find(func(model.Pokemon) bool) ([]*model.Pokemon, error)
-	FindOne(func(model.Pokemon) bool) (*model.Pokemon, error)
+	GetAll() ([]*model.Pokemon, error)
+	GetById(id uint64) (*model.Pokemon, error)
 }
 
-func NewPokemonRepository(pkMap map[uint64]model.Pokemon) PokemonRepository {
-	return &pokemonRepository{pkMap}
+func NewPokemonRepository(pkDB datastore.PokemonDB) PokemonRepository {
+	return &pokemonRepository{pkDB}
 }
 
-func (pkr *pokemonRepository) Find(test func(model.Pokemon) bool) ([]*model.Pokemon, error) {
-	pks := make([]*model.Pokemon, 0)
-	for _, pk := range pkr.pkMap {
-		if tmp := pk; test(tmp) {
-			pks = append(pks, &tmp)
-		}
+func (pkr *pokemonRepository) GetAll() ([]*model.Pokemon, error) {
+	pks, err := pkr.pkDB.Find(func(model.Pokemon) bool {
+		return true
+	})
+	if err != nil {
+		return nil, err
 	}
-
 	return pks, nil
 }
 
-func (pkr *pokemonRepository) FindOne(test func(model.Pokemon) bool) (*model.Pokemon, error) {
-	for _, pk := range pkr.pkMap {
-		if tmp := pk; test(tmp) {
-			return &tmp, nil
-		}
+func (pkr *pokemonRepository) GetById(id uint64) (*model.Pokemon, error) {
+	pk, err := pkr.pkDB.FindOne(func(pk model.Pokemon) bool {
+		return pk.ID == id
+	})
+	if err != nil {
+		return nil, err
 	}
-	return nil, errors.New("Pokemon not found")
+	return pk, nil
 }

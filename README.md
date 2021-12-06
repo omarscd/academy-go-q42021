@@ -4,7 +4,15 @@ Go version: `1.17`
 
 ## API
 
-| ENDPOINT         | HTTP Method    | Parameters    |
-|------------------|----------------|---------------|
-| /stand_users     | GET            |               |
-| /stand_users/:id | GET            |               |
+| ENDPOINT             | HTTP Method    | Parameters    |
+|----------------------|----------------|---------------|
+| /pokemons            | GET            |               |
+| /pokemons/:id        | GET            |               |
+| /pokemons/ext/:name  | GET            |               |
+| /pokemons/type       | GET            |  type: "odd" \| "even", items: int, items_per_worker: int  |
+
+### TODO
+- Handle external API error
+- Implement config file parsing
+- Do actual formatting with Pokemon presenters
+- Abstract WorkerPool

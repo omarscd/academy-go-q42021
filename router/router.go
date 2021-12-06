@@ -7,7 +7,9 @@ import (
 
 func NewRouter(c controller.AppController) *gin.Engine {
 	router := gin.Default()
-	router.GET("/stand_users", func(ctx *gin.Context) { _ = c.GetStandUsers(ctx) })
-	router.GET("/stand_users/:id", func(ctx *gin.Context) { _ = c.GetStandUserById(ctx) })
+	router.GET("/pokemons", c.GetPokemons)
+	router.GET("/pokemons/:id", c.GetPokemonById)
+	router.GET("/pokemons/ext/:name", c.GetPokemonExt)
+	router.GET("/pokemons/type", c.GetPokemonsByType)
 	return router
 }

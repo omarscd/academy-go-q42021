@@ -13,6 +13,7 @@ type pokemonController struct {
 	pokemonInteractor interactor.PokemonInteractor
 }
 
+// PokemonController contract
 type PokemonController interface {
 	GetPokemons(c *gin.Context)
 	GetPokemonById(c *gin.Context)
@@ -20,10 +21,12 @@ type PokemonController interface {
 	GetPokemonsByType(c *gin.Context)
 }
 
+// creates a new instance of PokemonController
 func NewPokemonController(pki interactor.PokemonInteractor) PokemonController {
 	return &pokemonController{pki}
 }
 
+// GetPokemons gets all the pokemons in the csv repository
 func (pkc *pokemonController) GetPokemons(c *gin.Context) {
 	pk, err := pkc.pokemonInteractor.GetAll()
 	if err != nil {
@@ -34,6 +37,7 @@ func (pkc *pokemonController) GetPokemons(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, pk)
 }
 
+// GetPokemonById gets a pokemon from the csv repository if the id matches
 func (pkc *pokemonController) GetPokemonById(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -50,6 +54,7 @@ func (pkc *pokemonController) GetPokemonById(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, pk)
 }
 
+// GetPokemonExt gets a pokemon from an external repository and saves it to the csv repository
 func (pkc *pokemonController) GetPokemonExt(c *gin.Context) {
 	name := c.Param("name")
 	if name == "" {
@@ -66,6 +71,7 @@ func (pkc *pokemonController) GetPokemonExt(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, pk)
 }
 
+// GetPokemonsByType gets a list of all the pokemons in the csv repository of the specified type
 func (pkc *pokemonController) GetPokemonsByType(c *gin.Context) {
 	t := c.Query("type")
 

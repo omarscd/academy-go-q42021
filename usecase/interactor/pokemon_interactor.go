@@ -24,6 +24,7 @@ func NewPokemonInteractor(r repository.PokemonRepository, e repository.PokemonEx
 	return &pokemonInteractor{r, e, p}
 }
 
+// gets all pokemons from the repository
 func (pki *pokemonInteractor) GetAll() ([]*model.Pokemon, error) {
 	pk, err := pki.PokemonRepository.GetAll()
 	if err != nil {
@@ -33,6 +34,7 @@ func (pki *pokemonInteractor) GetAll() ([]*model.Pokemon, error) {
 	return pki.PokemonPresenter.ResponsePokemons(pk), nil
 }
 
+// gets a pokemon by id from the repository
 func (pki *pokemonInteractor) GetById(id uint64) (*model.Pokemon, error) {
 	pk, err := pki.PokemonRepository.GetById(id)
 	if err != nil {
@@ -42,6 +44,7 @@ func (pki *pokemonInteractor) GetById(id uint64) (*model.Pokemon, error) {
 	return pk, nil
 }
 
+// gets a pokemon by name from an external api and saves it to the repository
 func (pki *pokemonInteractor) GetExtPokeByName(name string) (*model.Pokemon, error) {
 	pk, err := pki.PokemonExtApi.GetByName(name)
 	if err != nil {
@@ -56,10 +59,12 @@ func (pki *pokemonInteractor) GetExtPokeByName(name string) (*model.Pokemon, err
 	return pk, nil
 }
 
+// gets as many pokemons with odd ids as specified by 'items'
 func (pki *pokemonInteractor) GetOdds(items, itemsPerWorker int64) ([]*model.Pokemon, error) {
 	return pki.PokemonRepository.GetOdds(items, itemsPerWorker)
 }
 
+// gets as many pokemons with even ids as specified by 'items'
 func (pki *pokemonInteractor) GetEvens(items, itemsPerWorker int64) ([]*model.Pokemon, error) {
 	return pki.PokemonRepository.GetEvens(items, itemsPerWorker)
 }

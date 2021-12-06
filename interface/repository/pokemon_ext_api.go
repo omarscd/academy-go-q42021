@@ -23,14 +23,17 @@ type extPokemon struct {
 	} `json:"types"`
 }
 
+// contract for an external API client
 type PokemonExtApi interface {
 	GetByName(string) (*model.Pokemon, error)
 }
 
+// creates a new instance of PokemonExtApi
 func NewPokemonExtApi(name string) *pokemonExtApi {
 	return &pokemonExtApi{name}
 }
 
+// gets a pokemon by its name
 func (api *pokemonExtApi) GetByName(name string) (*model.Pokemon, error) {
 	resp, err := http.Get(api.baseUrl + "pokemon/" + name)
 	if err != nil {

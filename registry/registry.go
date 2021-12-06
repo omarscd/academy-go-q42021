@@ -9,10 +9,12 @@ type registry struct {
 	pkDB datastore.PokemonDB
 }
 
+// contract for the dependency resolver
 type Registry interface {
 	NewAppController() controller.AppController
 }
 
+// takes a PokemonDB to pass it down to the repository
 func NewRegistry(pkDB *datastore.PokemonDB) Registry {
 	return &registry{*pkDB}
 }

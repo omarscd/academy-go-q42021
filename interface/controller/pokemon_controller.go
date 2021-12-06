@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -81,17 +80,16 @@ func (pkc *pokemonController) GetPokemonsByType(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Parameter 'items_per_worker' must be an integer"})
 		return
 	}
-	log.Println(items, itemsPerWorker)
 
 	pks := []*model.Pokemon{}
 
 	switch t {
 	case "odd":
-		pks, err = pkc.pokemonInteractor.GetOdds()
+		pks, err = pkc.pokemonInteractor.GetOdds(items, itemsPerWorker)
 		c.IndentedJSON(http.StatusOK, gin.H{"data": pks})
 		return
 	case "even":
-		pks, err = pkc.pokemonInteractor.GetEvens()
+		pks, err = pkc.pokemonInteractor.GetEvens(items, itemsPerWorker)
 		c.IndentedJSON(http.StatusOK, gin.H{"data": pks})
 		return
 	default:

@@ -13,8 +13,8 @@ type PokemonRepository interface {
 	GetAll() ([]*model.Pokemon, error)
 	GetById(id uint64) (*model.Pokemon, error)
 	InsertOne(model.Pokemon) error
-	GetOdds() ([]*model.Pokemon, error)
-	GetEvens() ([]*model.Pokemon, error)
+	GetOdds(items, itemsPerWorker int64) ([]*model.Pokemon, error)
+	GetEvens(items, itemsPerWorker int64) ([]*model.Pokemon, error)
 }
 
 func NewPokemonRepository(pkDB datastore.PokemonDB) PokemonRepository {
@@ -46,20 +46,22 @@ func (pkr *pokemonRepository) InsertOne(pk model.Pokemon) error {
 	return err
 }
 
-func (pkr *pokemonRepository) GetOdds() ([]*model.Pokemon, error) {
-	pks, err := pkr.pkDB.FindWP(func(pk model.Pokemon) bool {
+func (pkr *pokemonRepository) GetOdds(items, itemsPerWorker int64) ([]*model.Pokemon, error) {
+	test := func(pk model.Pokemon) bool {
 		return pk.ID%2 == 1
-	})
+	}
+	pks, err := pkr.pkDB.FindWP(test, items, itemsPerWorker)
 	if err != nil {
 		return nil, err
 	}
 	return pks, nil
 }
 
-func (pkr *pokemonRepository) GetEvens() ([]*model.Pokemon, error) {
-	pks, err := pkr.pkDB.FindWP(func(pk model.Pokemon) bool {
+func (pkr *pokemonRepository) GetEvens(items, itemsPerWorker int64) ([]*model.Pokemon, error) {
+	test := func(pk model.Pokemon) bool {
 		return pk.ID%2 == 0
-	})
+	}
+	pks, err := pkr.pkDB.FindWP(test, items, itemsPerWorker)
 	if err != nil {
 		return nil, err
 	}

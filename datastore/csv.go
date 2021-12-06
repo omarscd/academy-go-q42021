@@ -123,7 +123,7 @@ func NewPokemonDB(path string) (*PokemonDB, error) {
 
 // FindWP returns a slice of all the Pokemons that pass the test function
 // similar to Find, the difference is FindWP uses a WorkerPool under the hood
-func (pkDB *PokemonDB) FindWP(test func(model.Pokemon) bool) ([]*model.Pokemon, error) {
+func (pkDB *PokemonDB) FindWP(test func(model.Pokemon) bool, items, itemsPerWorker int64) ([]*model.Pokemon, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -145,16 +145,20 @@ func (pkDB *PokemonDB) FindWP(test func(model.Pokemon) bool) ([]*model.Pokemon, 
 	reader.FieldsPerRecord = 3
 
 	src := make(chan []string)
-	out := make(chan *model.Pokemon)
+	out := make(chan *model.Pokemon, items)
 
 	var wg sync.WaitGroup
-
-	for i := 0; i < 5; i++ {
+	nWorkers := int(items/itemsPerWorker) + 1
+	log.Println(nWorkers)
+	for i := 0; i < nWorkers; i++ {
 		wg.Add(1)
 		go func(ctx context.Context, out chan *model.Pokemon, src chan []string) {
 			defer wg.Done()
-			addedByWorker := 0
+			var addedByWorker int64 = 0
 			for {
+				if cap(out) == len(out) {
+					return
+				}
 				select {
 				case record, ok := <-src:
 					if !ok {
@@ -171,8 +175,14 @@ func (pkDB *PokemonDB) FindWP(test func(model.Pokemon) bool) ([]*model.Pokemon, 
 					}
 
 					if test(*pk) {
-						out <- pk
-						addedByWorker++
+						select {
+						case out <- pk:
+							if addedByWorker++; addedByWorker >= itemsPerWorker {
+								return
+							}
+						default:
+							return
+						}
 					}
 				case <-ctx.Done():
 					return
@@ -194,10 +204,8 @@ func (pkDB *PokemonDB) FindWP(test func(model.Pokemon) bool) ([]*model.Pokemon, 
 		close(src)
 	}()
 
-	go func() {
-		wg.Wait()
-		close(out)
-	}()
+	wg.Wait()
+	close(out)
 
 	for pk := range out {
 		pks = append(pks, pk)

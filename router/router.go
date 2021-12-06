@@ -10,5 +10,6 @@ func NewRouter(c controller.AppController) *gin.Engine {
 	router.GET("/pokemons", c.GetPokemons)
 	router.GET("/pokemons/:id", c.GetPokemonById)
 	router.GET("/pokemons/ext/:name", c.GetPokemonExt)
+	router.GET("/pokemons/type", c.GetPokemonsByType)
 	return router
 }

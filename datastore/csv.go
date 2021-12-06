@@ -1,12 +1,15 @@
 package datastore
 
 import (
+	"context"
 	"encoding/csv"
 	"errors"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"strconv"
+	"sync"
 
 	"github.com/omarscd/academy-go-q42021/model"
 )
@@ -116,4 +119,89 @@ func NewPokemonDB(path string) (*PokemonDB, error) {
 	}
 
 	return &PokemonDB{pkMap, path}, nil
+}
+
+// FindWP returns a slice of all the Pokemons that pass the test function
+// similar to Find, the difference is FindWP uses a WorkerPool under the hood
+func (pkDB *PokemonDB) FindWP(test func(model.Pokemon) bool) ([]*model.Pokemon, error) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	pks := []*model.Pokemon{}
+
+	csvPath, err := filepath.Abs(pkDB.path)
+	if err != nil {
+		return nil, err
+	}
+
+	csvfile, err := os.Open(csvPath)
+	if err != nil {
+		return nil, err
+	}
+
+	defer csvfile.Close()
+
+	reader := csv.NewReader(csvfile)
+	reader.FieldsPerRecord = 3
+
+	src := make(chan []string)
+	out := make(chan *model.Pokemon)
+
+	var wg sync.WaitGroup
+
+	for i := 0; i < 5; i++ {
+		wg.Add(1)
+		go func(ctx context.Context, out chan *model.Pokemon, src chan []string) {
+			defer wg.Done()
+			addedByWorker := 0
+			for {
+				select {
+				case record, ok := <-src:
+					if !ok {
+						return
+					}
+					id, err := strconv.ParseUint(record[0], 10, 32)
+					if err != nil {
+						continue
+					}
+
+					pk, err := model.NewPokemon(id, record[1], record[2])
+					if err != nil {
+						continue
+					}
+
+					if test(*pk) {
+						out <- pk
+						addedByWorker++
+					}
+				case <-ctx.Done():
+					return
+				}
+			}
+		}(ctx, out, src)
+	}
+
+	go func() {
+		for {
+			record, err := reader.Read()
+			if err == io.EOF {
+				break
+			} else if err != nil {
+				continue
+			}
+			src <- record
+		}
+		close(src)
+	}()
+
+	go func() {
+		wg.Wait()
+		close(out)
+	}()
+
+	for pk := range out {
+		pks = append(pks, pk)
+	}
+
+	return pks, nil
 }

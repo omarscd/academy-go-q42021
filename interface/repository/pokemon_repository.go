@@ -13,6 +13,8 @@ type PokemonRepository interface {
 	GetAll() ([]*model.Pokemon, error)
 	GetById(id uint64) (*model.Pokemon, error)
 	InsertOne(model.Pokemon) error
+	GetOdds() ([]*model.Pokemon, error)
+	GetEvens() ([]*model.Pokemon, error)
 }
 
 func NewPokemonRepository(pkDB datastore.PokemonDB) PokemonRepository {
@@ -42,4 +44,24 @@ func (pkr *pokemonRepository) GetById(id uint64) (*model.Pokemon, error) {
 func (pkr *pokemonRepository) InsertOne(pk model.Pokemon) error {
 	err := pkr.pkDB.InsertOne(pk)
 	return err
+}
+
+func (pkr *pokemonRepository) GetOdds() ([]*model.Pokemon, error) {
+	pks, err := pkr.pkDB.FindWP(func(pk model.Pokemon) bool {
+		return pk.ID%2 == 1
+	})
+	if err != nil {
+		return nil, err
+	}
+	return pks, nil
+}
+
+func (pkr *pokemonRepository) GetEvens() ([]*model.Pokemon, error) {
+	pks, err := pkr.pkDB.FindWP(func(pk model.Pokemon) bool {
+		return pk.ID%2 == 0
+	})
+	if err != nil {
+		return nil, err
+	}
+	return pks, nil
 }

@@ -16,6 +16,8 @@ type PokemonInteractor interface {
 	GetAll() ([]*model.Pokemon, error)
 	GetById(uint64) (*model.Pokemon, error)
 	GetExtPokeByName(string) (*model.Pokemon, error)
+	GetOdds() ([]*model.Pokemon, error)
+	GetEvens() ([]*model.Pokemon, error)
 }
 
 func NewPokemonInteractor(r repository.PokemonRepository, e repository.PokemonExtApi, p presenter.PokemonPresenter) PokemonInteractor {
@@ -52,4 +54,12 @@ func (pki *pokemonInteractor) GetExtPokeByName(name string) (*model.Pokemon, err
 	}
 
 	return pk, nil
+}
+
+func (pki *pokemonInteractor) GetOdds() ([]*model.Pokemon, error) {
+	return pki.PokemonRepository.GetOdds()
+}
+
+func (pki *pokemonInteractor) GetEvens() ([]*model.Pokemon, error) {
+	return pki.PokemonRepository.GetEvens()
 }

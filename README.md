@@ -13,6 +13,6 @@ Go version: `1.17`
 
 ### TODO
 - Handle external API error
-- Remove config folder or implement config
+- Implement config file parsing
 - Do actual formatting with Pokemon presenters
 - Abstract WorkerPool

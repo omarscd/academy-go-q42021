@@ -90,3 +90,38 @@ func TestDatastore_FindOne(t *testing.T) {
 		}
 	}
 }
+
+func TestDatastore_FindWP(t *testing.T) {
+	tests := []struct {
+		testFunc       func(pk model.Pokemon) bool
+		expectedLength int
+	}{
+		{
+			func(pk model.Pokemon) bool { return true },
+			3,
+		},
+		{
+			func(pk model.Pokemon) bool { return pk.ID == 1 },
+			1,
+		},
+		{
+			func(pk model.Pokemon) bool { return pk.ID%2 == 0 },
+			2,
+		},
+		{
+			func(pk model.Pokemon) bool { return pk.MainType == "water" },
+			1,
+		},
+	}
+
+	mockDB, _ := NewPokemonDB("../db/test_sample.csv")
+	for _, tt := range tests {
+		gotPks, gotErr := mockDB.FindWP(tt.testFunc, 5, 5)
+		if gotErr != nil {
+			t.Error("Got unexpected error: ", gotErr)
+		}
+		if len(gotPks) != tt.expectedLength {
+			t.Errorf("Should get len 3, instead got %v\n", len(gotPks))
+		}
+	}
+}

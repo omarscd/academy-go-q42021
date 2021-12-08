@@ -1,7 +1,6 @@
 package datastore
 
 import (
-	"context"
 	"encoding/csv"
 	"errors"
 	"io"
@@ -124,9 +123,6 @@ func NewPokemonDB(path string) (*PokemonDB, error) {
 // FindWP returns a slice of all the Pokemons that pass the test function
 // similar to Find, the difference is FindWP uses a WorkerPool under the hood
 func (pkDB *PokemonDB) FindWP(test func(model.Pokemon) bool, items, itemsPerWorker int64) ([]*model.Pokemon, error) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
 	pks := []*model.Pokemon{}
 
 	csvPath, err := filepath.Abs(pkDB.path)
@@ -149,21 +145,19 @@ func (pkDB *PokemonDB) FindWP(test func(model.Pokemon) bool, items, itemsPerWork
 
 	var wg sync.WaitGroup
 	nWorkers := int(items/itemsPerWorker) + 1
-	log.Println(nWorkers)
+
 	for i := 0; i < nWorkers; i++ {
 		wg.Add(1)
-		go func(ctx context.Context, out chan *model.Pokemon, src chan []string) {
+		go func(out chan *model.Pokemon, src chan []string, wig int) {
 			defer wg.Done()
 			var addedByWorker int64 = 0
+			defer func() { log.Printf("Worker %v added %v items", wig, addedByWorker) }()
 			for {
 				if cap(out) == len(out) {
 					return
 				}
-				select {
-				case record, ok := <-src:
-					if !ok {
-						return
-					}
+
+				if record, ok := <-src; ok {
 					id, err := strconv.ParseUint(record[0], 10, 32)
 					if err != nil {
 						continue
@@ -184,11 +178,11 @@ func (pkDB *PokemonDB) FindWP(test func(model.Pokemon) bool, items, itemsPerWork
 							return
 						}
 					}
-				case <-ctx.Done():
+				} else {
 					return
 				}
 			}
-		}(ctx, out, src)
+		}(out, src, i)
 	}
 
 	go func() {

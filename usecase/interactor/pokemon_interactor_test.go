@@ -55,11 +55,13 @@ func (mPkRepo mockPkRepo) InsertOne(model.Pokemon) error {
 }
 
 func (mPkRepo mockPkRepo) GetOdds(items, itemsPerWorker int64) ([]*model.Pokemon, error) {
-	return []*model.Pokemon{}, nil
+	args := mPkRepo.Called(items, itemsPerWorker)
+	return args.Get(0).([]*model.Pokemon), args.Error(1)
 }
 
 func (mPkRepo mockPkRepo) GetEvens(items, itemsPerWorker int64) ([]*model.Pokemon, error) {
-	return []*model.Pokemon{}, nil
+	args := mPkRepo.Called(items, itemsPerWorker)
+	return args.Get(0).([]*model.Pokemon), args.Error(1)
 }
 
 // External api interface mocks
@@ -70,7 +72,8 @@ func (pkApi mockExtApi) GetByName(name string) (*model.Pokemon, error) {
 
 // Presenter interface mocks
 func (mPkPres mockPkPresenter) ResponsePokemons(pks []*model.Pokemon) []*model.Pokemon {
-	return []*model.Pokemon{}
+	args := mPkPres.Called(pks)
+	return args.Get(0).([]*model.Pokemon)
 }
 
 // ------- Tests --------

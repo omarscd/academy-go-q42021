@@ -148,10 +148,9 @@ func (pkDB *PokemonDB) FindWP(test func(model.Pokemon) bool, items, itemsPerWork
 
 	for i := 0; i < nWorkers; i++ {
 		wg.Add(1)
-		go func(out chan *model.Pokemon, src chan []string, wig int) {
+		go func(out chan *model.Pokemon, src chan []string) {
 			defer wg.Done()
 			var addedByWorker int64 = 0
-			defer func() { log.Printf("Worker %v added %v items", wig, addedByWorker) }()
 			for {
 				if cap(out) == len(out) {
 					return
@@ -182,7 +181,7 @@ func (pkDB *PokemonDB) FindWP(test func(model.Pokemon) bool, items, itemsPerWork
 					return
 				}
 			}
-		}(out, src, i)
+		}(out, src)
 	}
 
 	go func() {

@@ -151,34 +151,30 @@ func (pkDB *PokemonDB) FindWP(test func(model.Pokemon) bool, items, itemsPerWork
 		go func(out chan *model.Pokemon, src chan []string) {
 			defer wg.Done()
 			var addedByWorker int64 = 0
-			for {
+			for record := range src {
 				if cap(out) == len(out) {
 					return
 				}
 
-				if record, ok := <-src; ok {
-					id, err := strconv.ParseUint(record[0], 10, 32)
-					if err != nil {
-						continue
-					}
+				id, err := strconv.ParseUint(record[0], 10, 32)
+				if err != nil {
+					continue
+				}
 
-					pk, err := model.NewPokemon(id, record[1], record[2])
-					if err != nil {
-						continue
-					}
+				pk, err := model.NewPokemon(id, record[1], record[2])
+				if err != nil {
+					continue
+				}
 
-					if test(*pk) {
-						select {
-						case out <- pk:
-							if addedByWorker++; addedByWorker >= itemsPerWorker {
-								return
-							}
-						default:
+				if test(*pk) {
+					select {
+					case out <- pk:
+						if addedByWorker++; addedByWorker >= itemsPerWorker {
 							return
 						}
+					default:
+						return
 					}
-				} else {
-					return
 				}
 			}
 		}(out, src)

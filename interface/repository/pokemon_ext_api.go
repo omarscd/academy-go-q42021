@@ -29,7 +29,7 @@ type PokemonExtApi interface {
 }
 
 // creates a new instance of PokemonExtApi
-func NewPokemonExtApi(name string) *pokemonExtApi {
+func NewPokemonExtApi(name string) PokemonExtApi {
 	return &pokemonExtApi{name}
 }
 
